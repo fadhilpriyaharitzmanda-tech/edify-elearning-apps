@@ -19,6 +19,9 @@
     <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         /* ===========================
            Design Tokens (ChatDeck style)
@@ -209,35 +212,162 @@
         }
         .btn-ghost:hover { background: var(--color-border); }
 
-        /* Mobile menu toggle */
+        /* ============================================================
+           Mobile Menu Button ("Garis 3" Animated Hamburger)
+        ============================================================ */
         .mobile-menu-btn {
             display: none;
-            border: none; background: transparent; cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--color-border);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            cursor: pointer;
+            padding: 0;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            z-index: 1002;
             color: var(--color-text);
-            padding: 0.25rem;
         }
-        .mobile-menu-btn svg { width: 24px; height: 24px; }
-
-        /* Mobile menu drawer */
-        .mobile-menu {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: var(--color-bg);
-            z-index: 60;
-            padding: 1.5rem;
+        [data-theme="dark"] .mobile-menu-btn {
+            background: rgba(24, 24, 30, 0.7);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+        .mobile-menu-btn:hover {
+            border-color: var(--color-primary);
+            background: rgba(99, 102, 241, 0.08);
+            transform: scale(1.03);
+        }
+        .mobile-menu-btn:active {
+            transform: scale(0.96);
+        }
+        .mobile-menu-btn .hamburger-box {
+            width: 18px;
+            height: 14px;
+            position: relative;
+            display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            justify-content: space-between;
         }
-        .mobile-menu.open { display: flex; }
-        .mobile-menu-header { display: flex; align-items: center; justify-content: space-between; }
-        .mobile-close-btn {
-            border: none; background: transparent; cursor: pointer;
+        .mobile-menu-btn .hamburger-bar {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: var(--color-text);
+            border-radius: 9999px;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.2s ease,
+                        background-color 0.2s ease;
+            transform-origin: center;
+        }
+        /* Morph to animated "X" when active */
+        .mobile-menu-btn.is-active {
+            background: rgba(99, 102, 241, 0.12);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+        .mobile-menu-btn.is-active .hamburger-bar {
+            background-color: var(--color-primary);
+        }
+        .mobile-menu-btn.is-active .bar-1 {
+            transform: translateY(6px) rotate(45deg);
+        }
+        .mobile-menu-btn.is-active .bar-2 {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+        .mobile-menu-btn.is-active .bar-3 {
+            transform: translateY(-6px) rotate(-45deg);
+        }
+
+        /* ============================================================
+           Mobile Dropdown Menu (Clean, Simple & Professional)
+        ============================================================ */
+        .mobile-menu-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 12, 20, 0.4);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+        .mobile-menu-backdrop.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .mobile-dropdown-menu {
+            position: fixed;
+            top: calc(var(--navbar-height, 68px) + 8px);
+            left: 1rem;
+            right: 1rem;
+            max-width: 420px;
+            margin: 0 auto;
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+            padding: 0.85rem;
+            box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.14);
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translateY(-8px);
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+        }
+        [data-theme="dark"] .mobile-dropdown-menu {
+            background: var(--color-bg-dark);
+            border-color: var(--color-border-dark);
+            box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.5);
+        }
+        .mobile-dropdown-menu.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .mobile-dropdown-nav {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .mobile-nav-link {
+            display: block;
+            padding: 0.75rem 1rem;
+            border-radius: 0.6rem;
             color: var(--color-text);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: background 0.15s ease, color 0.15s ease;
         }
-        .mobile-menu-links { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
-        .mobile-menu-links a { font-size: 1.1rem; color: var(--color-text); text-decoration: none; }
-        .mobile-menu-actions { display: flex; flex-direction: column; gap: 0.75rem; }
+        .mobile-nav-link:hover, .mobile-nav-link:active {
+            background: var(--color-border);
+            color: var(--color-primary);
+        }
+        .mobile-dropdown-divider {
+            height: 1px;
+            background: var(--color-border);
+            margin: 0.6rem 0;
+        }
+        .mobile-dropdown-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding-top: 0.2rem;
+        }
 
         @media (max-width: 1024px) {
             .navbar-links { display: none; }
@@ -245,7 +375,7 @@
             .navbar-actions .btn-primary,
             .navbar-actions .btn-nav,
             .navbar-actions form { display: none !important; }
-            .mobile-menu-btn { display: block; }
+            .mobile-menu-btn { display: flex; }
         }
 
         /* ===========================
@@ -868,32 +998,32 @@
 </head>
 <body>
 
-    <!-- ========================== MOBILE MENU ========================== -->
-    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Menu Navigasi">
-        <div class="mobile-menu-header">
-            <a href="<?= url('/') ?>" class="navbar-brand" onclick="closeMobileMenu()" aria-label="Edify">
-                <img src="<?= asset('images/logo.png') ?>" alt="Edify" class="navbar-logo-img logo-light" style="height: 36px;">
-                <img src="<?= asset('images/logo-dark.png') ?>" alt="Edify" class="navbar-logo-img logo-dark" style="height: 36px;">
-            </a>
-            <button class="mobile-close-btn" onclick="closeMobileMenu()" aria-label="Tutup menu">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-        </div>
-        <ul class="mobile-menu-links">
-            <li><a href="<?= url('/#fitur') ?>" onclick="closeMobileMenu()">Fitur</a></li>
-            <li><a href="<?= route('user.courses.index') ?>" onclick="closeMobileMenu()">Kursus</a></li>
-            <li><a href="<?= url('/#tim') ?>" onclick="closeMobileMenu()">Tim Kami</a></li>
-            <li><a href="<?= url('/#harga') ?>" onclick="closeMobileMenu()">Harga</a></li>
-            <li><a href="<?= url('/#faq') ?>" onclick="closeMobileMenu()">FAQ</a></li>
+    <!-- ========================== MOBILE MENU BACKDROP & DROPDOWN ========================== -->
+    <div class="mobile-menu-backdrop" id="mobileMenuBackdrop" onclick="closeMobileMenu()"></div>
+
+    <div class="mobile-dropdown-menu" id="mobileDropdownMenu" role="dialog" aria-modal="true" aria-label="Menu Navigasi Mobile">
+        <ul class="mobile-dropdown-nav">
+            <li><a href="<?= url('/#fitur') ?>" class="mobile-nav-link" onclick="closeMobileMenu()">Fitur</a></li>
+            <li><a href="<?= route('user.courses.index') ?>" class="mobile-nav-link" onclick="closeMobileMenu()">Kursus</a></li>
+            <li><a href="<?= url('/#tim') ?>" class="mobile-nav-link" onclick="closeMobileMenu()">Tim Kami</a></li>
+            <li><a href="<?= url('/#harga') ?>" class="mobile-nav-link" onclick="closeMobileMenu()">Harga</a></li>
+            <li><a href="<?= url('/#faq') ?>" class="mobile-nav-link" onclick="closeMobileMenu()">FAQ</a></li>
         </ul>
-        <div class="mobile-menu-actions">
+
+        <div class="mobile-dropdown-divider"></div>
+
+        <div class="mobile-dropdown-actions">
             <?php if (auth()->check()): ?>
                 <form method="POST" action="<?= route('logout') ?>" style="margin:0;width:100%;">
                     <?= csrf_field() ?>
-                    <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Keluar</button>
+                    <button type="submit" class="btn-primary" style="width:100%;justify-content:center;padding:0.7rem;border-radius:0.6rem;font-weight:600;">
+                        Keluar
+                    </button>
                 </form>
             <?php else: ?>
-                <a href="<?= route('login') ?>" class="btn-primary" style="width:100%;justify-content:center;">Masuk</a>
+                <a href="<?= route('login') ?>" class="btn-primary" style="width:100%;justify-content:center;padding:0.7rem;border-radius:0.6rem;font-weight:600;" onclick="closeMobileMenu()">
+                    Masuk
+                </a>
             <?php endif; ?>
         </div>
     </div>
@@ -935,9 +1065,13 @@
                     <i data-lucide="moon" id="userMoonIcon" style="display:none"></i>
                 </button>
 
-                <!-- Mobile toggle -->
-                <button class="mobile-menu-btn" onclick="openMobileMenu()" aria-label="Buka menu">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                <!-- Mobile toggle ("Garis 3" Animated Button) -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()" aria-label="Menu navigasi" aria-expanded="false" aria-controls="mobileDropdownMenu">
+                    <span class="hamburger-box">
+                        <span class="hamburger-bar bar-1"></span>
+                        <span class="hamburger-bar bar-2"></span>
+                        <span class="hamburger-bar bar-3"></span>
+                    </span>
                 </button>
             </div>
         </div>
@@ -1037,16 +1171,54 @@
         checkScroll();
 
         /* ============================================================
-           Mobile Menu
+           Mobile Dropdown Menu Toggle (Smooth animated)
         ============================================================ */
-        function openMobileMenu() {
-            document.getElementById('mobileMenu').classList.add('open');
-            document.body.style.overflow = 'hidden';
+        function toggleMobileMenu() {
+            const dropdown = document.getElementById('mobileDropdownMenu');
+            const backdrop = document.getElementById('mobileMenuBackdrop');
+            const btn      = document.getElementById('mobileMenuBtn');
+            if (!dropdown) return;
+            const isOpen = dropdown.classList.contains('open');
+            if (isOpen) {
+                closeMobileMenu();
+            } else {
+                openMobileMenu();
+            }
         }
+
+        function openMobileMenu() {
+            const dropdown = document.getElementById('mobileDropdownMenu');
+            const backdrop = document.getElementById('mobileMenuBackdrop');
+            const btn      = document.getElementById('mobileMenuBtn');
+            if (dropdown) dropdown.classList.add('open');
+            if (backdrop) backdrop.classList.add('open');
+            if (btn) {
+                btn.classList.add('is-active');
+                btn.setAttribute('aria-expanded', 'true');
+            }
+            document.body.style.overflow = 'hidden';
+            if (window.lucide) window.lucide.createIcons();
+        }
+
         function closeMobileMenu() {
-            document.getElementById('mobileMenu').classList.remove('open');
+            const dropdown = document.getElementById('mobileDropdownMenu');
+            const backdrop = document.getElementById('mobileMenuBackdrop');
+            const btn      = document.getElementById('mobileMenuBtn');
+            if (dropdown) dropdown.classList.remove('open');
+            if (backdrop) backdrop.classList.remove('open');
+            if (btn) {
+                btn.classList.remove('is-active');
+                btn.setAttribute('aria-expanded', 'false');
+            }
             document.body.style.overflow = '';
         }
+
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeMobileMenu();
+        });
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 1024) closeMobileMenu();
+        }, { passive: true });
 
         /* ============================================================
            Theme Toggle with Expanding Circle (ChatDeck Style)

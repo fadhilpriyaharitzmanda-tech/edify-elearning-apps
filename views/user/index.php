@@ -15,12 +15,17 @@
         position: relative;
         overflow: hidden;
         background: var(--color-bg);
-        padding: 5.5rem 0 4.5rem;
+        padding: 6.5rem 0 6rem;
         width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+    }
+    @media (max-width: 768px) {
+        .cta69-hero-section {
+            padding: 5rem 0 4.5rem;
+        }
     }
 
     @keyframes cta69-marquee {
@@ -176,6 +181,7 @@
     /* Action Buttons (Button12) */
     .cta69-actions {
         margin-top: 2.75rem;
+        margin-bottom: 1rem;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -242,36 +248,6 @@
         align-items: center;
         gap: 0.4rem;
     }
-
-    /* Trust highlights */
-    .cta69-highlights {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 2rem;
-        flex-wrap: wrap;
-        margin-top: 3.25rem;
-        padding-top: 2rem;
-        border-top: 1px dashed var(--color-border);
-        max-width: 800px;
-        width: 100%;
-    }
-    .cta69-highlight-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.9rem;
-        color: var(--color-text-muted);
-        font-weight: 500;
-    }
-    .cta69-highlight-icon {
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
 </style>
 
 <?php
@@ -325,34 +301,6 @@ $marqueeLine = str_repeat($marqueePhrase . ' · ', $repeats);
             <a href="<?= route('user.courses.index') ?>" class="cta69-btn-secondary">
                 <span>Jelajahi 200+ Kursus</span>
             </a>
-        </div>
-        
-        <!-- Trust Indicators & Key Highlights -->
-        <div class="cta69-highlights">
-            <div class="cta69-highlight-item">
-                <div class="cta69-highlight-icon" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
-                    <i data-lucide="check" style="width: 15px; height: 15px;"></i>
-                </div>
-                <span>200+ Kursus Terstruktur</span>
-            </div>
-            <div class="cta69-highlight-item">
-                <div class="cta69-highlight-icon" style="background: rgba(99, 102, 241, 0.12); color: var(--color-primary);">
-                    <i data-lucide="award" style="width: 15px; height: 15px;"></i>
-                </div>
-                <span>Sertifikat Resmi</span>
-            </div>
-            <div class="cta69-highlight-item">
-                <div class="cta69-highlight-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
-                    <i data-lucide="users" style="width: 15px; height: 15px;"></i>
-                </div>
-                <span>Mentor Praktisi Top</span>
-            </div>
-            <div class="cta69-highlight-item">
-                <div class="cta69-highlight-icon" style="background: rgba(139, 92, 246, 0.12); color: #8b5cf6;">
-                    <i data-lucide="shield-check" style="width: 15px; height: 15px;"></i>
-                </div>
-                <span>Akses Seumur Hidup</span>
-            </div>
         </div>
     </div>
 </section>
@@ -664,21 +612,106 @@ $marqueeLine = str_repeat($marqueePhrase . ' · ', $repeats);
             </a>
         </div>
 
-        <!-- Category Filter Tabs -->
-        <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 2.75rem; overflow-x: auto; padding-bottom: 0.5rem; scrollbar-width: none;">
-            <button type="button" class="course-filter-tab active" data-filter="all" onclick="filterCourses('all', this)">Semua Materi</button>
-            <button type="button" class="course-filter-tab" data-filter="html-css" onclick="filterCourses('html-css', this)">HTML & CSS</button>
-            <button type="button" class="course-filter-tab" data-filter="javascript" onclick="filterCourses('javascript', this)">JavaScript</button>
-            <button type="button" class="course-filter-tab" data-filter="tools" onclick="filterCourses('tools', this)">Git & Tools</button>
-            <button type="button" class="course-filter-tab" data-filter="backend" onclick="filterCourses('backend', this)">PHP & Database</button>
-            <button type="button" class="course-filter-tab" data-filter="design" onclick="filterCourses('design', this)">UI/UX Design</button>
+        <!-- Simple Functional Search & Tool Bar -->
+        <div class="courses-toolbar-simple">
+            <div class="courses-search-box">
+                <i data-lucide="search" style="width: 17px; height: 17px; color: var(--color-text-muted);"></i>
+                <input type="text" id="courseQuickSearch" placeholder="Cari materi atau nama kursus..." oninput="handleCourseFilter()">
+            </div>
+            <div class="courses-tool-actions">
+                <select id="courseTypeFilter" onchange="handleCourseFilter()" class="courses-select-pill">
+                    <option value="all">Semua Tipe</option>
+                    <option value="free">Gratis</option>
+                    <option value="paid">Berbayar</option>
+                </select>
+                <span class="courses-count-badge" id="coursesCountDisplay">Menampilkan 6 kursus</span>
+            </div>
         </div>
 
         <!-- Simple, Professional Course Cards Grid Styles -->
         <style>
+            .courses-toolbar-simple {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
+                margin-bottom: 2.25rem;
+                flex-wrap: wrap;
+            }
+            .courses-search-box {
+                display: flex;
+                align-items: center;
+                gap: 0.65rem;
+                background: var(--color-bg);
+                border: 1px solid var(--color-border);
+                border-radius: 0.75rem;
+                padding: 0 1.15rem;
+                height: 44px;
+                flex: 1 1 280px;
+                max-width: 460px;
+                box-sizing: border-box;
+                transition: border-color 0.2s, box-shadow 0.2s;
+            }
+            .courses-search-box:focus-within {
+                border-color: var(--color-primary);
+                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+            }
+            .courses-search-box input {
+                border: none;
+                background: transparent;
+                color: var(--color-text);
+                font-family: inherit;
+                font-size: 0.925rem;
+                width: 100%;
+                height: 100%;
+                outline: none;
+                box-sizing: border-box;
+            }
+            .courses-tool-actions {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            .courses-select-pill {
+                background: var(--color-bg);
+                border: 1px solid var(--color-border);
+                border-radius: 0.75rem;
+                padding: 0 1.15rem;
+                height: 44px;
+                color: var(--color-text);
+                font-family: inherit;
+                font-size: 0.875rem;
+                outline: none;
+                cursor: pointer;
+                box-sizing: border-box;
+            }
+            .courses-select-pill:focus {
+                border-color: var(--color-primary);
+            }
+            .courses-count-badge {
+                font-size: 0.85rem;
+                color: var(--color-text-muted);
+                white-space: nowrap;
+            }
+            @media (max-width: 640px) {
+                .courses-toolbar-simple {
+                    flex-direction: column;
+                    align-items: stretch;
+                    gap: 0.75rem;
+                }
+                .courses-search-box {
+                    flex: none;
+                    width: 100%;
+                    max-width: 100%;
+                    height: 44px;
+                }
+                .courses-tool-actions {
+                    justify-content: space-between;
+                }
+            }
             .courses-simple-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
                 gap: 1.75rem;
             }
             @media (max-width: 768px) {
@@ -857,7 +890,7 @@ $marqueeLine = str_repeat($marqueePhrase . ' · ', $repeats);
                     'category'    => 'HTML & CSS',
                     'rating'      => '4.9',
                     'reviews'     => '240+ Ulasan',
-                    'image'       => 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80',
+                    'image'       => 'https://images.unsplash.com/photo-1621839673705-6617adf9e890?auto=format&fit=crop&w=800&q=80',
                     'hours'       => '14 Jam',
                     'tutors'      => '6x Sesi Tutor',
                     'benefits'    => '3 Proyek Riil',
@@ -872,7 +905,7 @@ $marqueeLine = str_repeat($marqueePhrase . ' · ', $repeats);
                     'category'    => 'HTML & CSS',
                     'rating'      => '4.9',
                     'reviews'     => '190+ Ulasan',
-                    'image'       => 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80',
+                    'image'       => 'https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?auto=format&fit=crop&w=800&q=80',
                     'hours'       => '18 Jam',
                     'tutors'      => '8x Sesi Tutor',
                     'benefits'    => 'Design System',
@@ -887,7 +920,7 @@ $marqueeLine = str_repeat($marqueePhrase . ' · ', $repeats);
                     'category'    => 'JavaScript',
                     'rating'      => '5.0',
                     'reviews'     => '310+ Ulasan',
-                    'image'       => 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80',
+                    'image'       => 'https://images.unsplash.com/photo-1579468118864-1b9ea3c0db4a?auto=format&fit=crop&w=800&q=80',
                     'hours'       => '24 Jam',
                     'tutors'      => '10x Sesi Tutor',
                     'benefits'    => '5 Aplikasi Web',
@@ -917,7 +950,7 @@ $marqueeLine = str_repeat($marqueePhrase . ' · ', $repeats);
                     'category'    => 'PHP & Database',
                     'rating'      => '4.9',
                     'reviews'     => '280+ Ulasan',
-                    'image'       => 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80',
+                    'image'       => 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=800&q=80',
                     'hours'       => '26 Jam',
                     'tutors'      => '12x Sesi Tutor',
                     'benefits'    => 'Full Backend',
@@ -1002,26 +1035,35 @@ $marqueeLine = str_repeat($marqueePhrase . ' · ', $repeats);
 
 <?php ob_start(); ?>
 <script>
-    function filterCourses(category, btn) {
-        document.querySelectorAll('.course-filter-tab').forEach(b => b.classList.remove('active'));
-        if (btn) btn.classList.add('active');
-
+    function handleCourseFilter() {
+        const query = (document.getElementById('courseQuickSearch')?.value || '').toLowerCase().trim();
+        const type  = document.getElementById('courseTypeFilter')?.value || 'all';
         const cards = document.querySelectorAll('.course-card-pro');
+        let visibleCount = 0;
+
         cards.forEach(card => {
-            const cardCategory = card.getAttribute('data-course-filter');
-            if (category === 'all' || cardCategory === category) {
+            const title = (card.querySelector('.course-card-title')?.textContent || '').toLowerCase();
+            const desc  = (card.querySelector('.course-card-desc')?.textContent || '').toLowerCase();
+            const cat   = (card.querySelector('.course-cat-tag')?.textContent || '').toLowerCase();
+            const isFree = card.querySelector('.course-free-price') !== null;
+
+            const matchesQuery = query === '' || title.includes(query) || desc.includes(query) || cat.includes(query);
+            let matchesType = true;
+            if (type === 'free') matchesType = isFree;
+            if (type === 'paid') matchesType = !isFree;
+
+            if (matchesQuery && matchesType) {
                 card.style.display = 'flex';
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(12px)';
-                setTimeout(() => {
-                    card.style.transition = 'all 0.35s ease';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, 20);
+                visibleCount++;
             } else {
                 card.style.display = 'none';
             }
         });
+
+        const countBadge = document.getElementById('coursesCountDisplay');
+        if (countBadge) {
+            countBadge.textContent = 'Menampilkan ' + visibleCount + ' kursus';
+        }
     }
 </script>
 <?php $extra_scripts = ($extra_scripts ?? '') . ob_get_clean(); ?>

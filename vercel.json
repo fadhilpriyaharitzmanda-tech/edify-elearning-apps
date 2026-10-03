@@ -6,6 +6,10 @@
   },
   "routes": [
     {
+      "src": "/(images|components|layouts|lib|team|views|favicon.*)(/.*)?",
+      "dest": "/$1$2"
+    },
+    {
       "src": "/(.*)",
       "dest": "/api/index.php"
     }
